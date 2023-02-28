@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tasks")
 public class TaskController {
 
+
+    //postman http://localhost:8080/api/tasks/
     @Autowired
     private TaskRepository taskRepository;
 
@@ -22,19 +25,19 @@ public class TaskController {
         return taskRepository.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<Task> getTaskById(@PathVariable String id) {
         Optional<Task> optionalTask = taskRepository.findById(id);
         return optionalTask.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/task")
+    @PostMapping("/save/task")
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
         Task savedTask = taskRepository.save(task);
         return new ResponseEntity<>(savedTask, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable String id, @RequestBody Task task) {
         Optional<Task> optionalTask = taskRepository.findById(id);
         if (optionalTask.isPresent()) {
@@ -48,7 +51,7 @@ public class TaskController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable String id) {
         Optional<Task> optionalTask = taskRepository.findById(id);
         if (optionalTask.isPresent()) {
@@ -59,7 +62,16 @@ public class TaskController {
         }
     }
 
+    @GetMapping("/sortedByNotCompletedCompilation/all")
+    public List<Task> getTasksThatAreNotCompleted() {
+        return taskRepository.findAll().stream().filter(e -> !e.isCompletionStatus())
+                .collect(Collectors.toList());
+    }
 
-
+    @GetMapping("/sortedByCompletedCompilation/all")
+    public List<Task> getTasksThatAreCompleted() {
+        return taskRepository.findAll().stream().filter(Task::isCompletionStatus)
+                .collect(Collectors.toList());
+    }
 
 }
