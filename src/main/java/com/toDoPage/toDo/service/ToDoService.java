@@ -3,10 +3,14 @@ package com.toDoPage.toDo.service;
 import com.toDoPage.toDo.pojo.Task;
 import com.toDoPage.toDo.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+
+
+@Service
 public class ToDoService {
     @Autowired
     private TaskRepository taskRepository;
@@ -20,8 +24,9 @@ public class ToDoService {
         return optionalTask.orElse(null);
     }
 
-    public void saveTask(Task task) {
+    public Task saveTask(Task task) {
         taskRepository.save(task);
+        return task;
     }
 
     public void deleteTask(String id) {
