@@ -1,4 +1,4 @@
-package com.toDoPage.toDo;
+package com.toDoPage.toDo.controller;
 
 import com.toDoPage.toDo.pojo.Task;
 import com.toDoPage.toDo.repository.TaskRepository;
