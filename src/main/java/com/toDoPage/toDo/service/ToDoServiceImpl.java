@@ -1,5 +1,5 @@
-package com.toDoPage.toDo.repository;
+package com.toDoPage.toDo.service;
 
 public class ToDoServiceImpl implements ToDoService {
-    
+
 }
