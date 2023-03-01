@@ -11,7 +11,7 @@ import java.util.Optional;
 
 
 @Service
-public class ToDoService {
+public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 

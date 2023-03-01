@@ -11,16 +11,26 @@ import java.util.UUID;
 
 
 @Entity
-@Table(name = "new_table")
+@Table(name = "users")
 @Getter
 @Setter
-public class Task {
+public class User {
+
+    @Column(name = "nickname")
+    private String nickname;
+    @Column(name = "email")
+    private String email;
+    @Column(name = "password")
+    private String password;
+
     @Id
     private String id;
 
-    @Column(name = "description")
-    private String description;
-    @Column(name = "completionStatus")
-    private boolean completionStatus;
+
+
+    public User() {
+        this.id = UUID.randomUUID().toString();
+    }
+
 
 }
