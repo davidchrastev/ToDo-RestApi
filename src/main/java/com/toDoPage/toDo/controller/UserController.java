@@ -13,6 +13,8 @@ import java.util.Optional;
 @RequestMapping("/api/user")
 public class UserController {
 
+
+    //postman http://localhost:8080/api/user
     @Autowired
     UserService userService;
 
