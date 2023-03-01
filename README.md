@@ -1,5 +1,5 @@
-# ToDo-RestApi
-Building a to Do Rest-API, basic project!
+# ToDo-RestAPI #
+Building a to Do RestAPI, really basic project. 
 Database-MySQL
 Backend-Spring Boot
 
