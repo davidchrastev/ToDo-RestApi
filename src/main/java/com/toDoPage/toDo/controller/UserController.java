@@ -20,8 +20,8 @@ public class UserController {
 
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<User> getTaskById(@PathVariable String nickname) {
-        Optional<User> optionalTask = Optional.ofNullable(userService.findTaskByNickname(nickname));
+    public ResponseEntity<User> getUserById(@PathVariable String id) {
+        Optional<User> optionalTask = Optional.ofNullable(userService.findUserById(id));
         return optionalTask.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -33,7 +33,7 @@ public class UserController {
 
     @GetMapping("/login")
     public ResponseEntity<User> login(@RequestBody User user) {
-        Optional<User> optionalNickname = Optional.ofNullable(userService.findTaskByNickname(user.getId()));
+        Optional<User> optionalNickname = Optional.ofNullable(userService.findUserById(user.getId()));
         return optionalNickname.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

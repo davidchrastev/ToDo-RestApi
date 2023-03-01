@@ -16,6 +16,8 @@ import java.util.UUID;
 @Setter
 public class User {
 
+    @Id
+    private String id;
     @Column(name = "nickname")
     private String nickname;
     @Column(name = "email")
@@ -23,8 +25,6 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Id
-    private String id;
 
 
 

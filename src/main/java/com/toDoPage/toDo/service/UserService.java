@@ -15,12 +15,12 @@ public class UserService {
     private UserRepository userRepository;
 
 
-    public List<User> findAllTasks() {
+    public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
-    public User findTaskByNickname(String nickname) {
-        Optional<User> optionalTask = userRepository.findById(nickname);
+    public User findUserById(String id) {
+        Optional<User> optionalTask = userRepository.findById(id);
         return optionalTask.orElse(null);
     }
 
@@ -29,8 +29,8 @@ public class UserService {
         return user;
     }
 
-    public void deleteTask(String nickname) {
-        userRepository.deleteById(nickname);
+    public void deleteUser(String id) {
+        userRepository.deleteById(id);
     }
 
 }
