@@ -1,9 +1,6 @@
 package com.toDoPage.toDo.pojo;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,5 +19,13 @@ public class Task {
     private String description;
     @Column(name = "completionStatus")
     private boolean completionStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Task() {
+        this.id = UUID.randomUUID().toString();
+    }
 
 }
