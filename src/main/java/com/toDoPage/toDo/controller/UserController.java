@@ -30,7 +30,7 @@ public class UserController {
         User isContained = userService.findUserById(user.getNickname());
 
         if (isContained != null) {
-            return new ResponseEntity<>("User with that username already exists", HttpStatus.CREATED);
+            return new ResponseEntity<>("User with that username already exists", HttpStatus.OK);
         } else {
             userService.registerUser(user);
             return new ResponseEntity<>("Successfully created user with nickname " + user.getNickname(), HttpStatus.CREATED);
@@ -42,10 +42,10 @@ public class UserController {
         User isContained = userService.findUserById(user.getNickname());
 
         if (isContained == null) {
-            return new ResponseEntity<>("Wrong username or wrong password", HttpStatus.CREATED);
+            return new ResponseEntity<>("Wrong username or wrong password", HttpStatus.NOT_FOUND);
         } else {
             userService.registerUser(user);
-            return new ResponseEntity<>("Successfully logged  " + user.getNickname(), HttpStatus.CREATED);
+            return new ResponseEntity<>("Successfully logged  " + user.getNickname(), HttpStatus.ACCEPTED);
         }
     }
 
