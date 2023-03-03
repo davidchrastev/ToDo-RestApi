@@ -27,7 +27,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
-        User isContained = userService.findUserById(user.getNickname());
+        User isContained = userService.findUserById(user.getId());
 
         if (isContained != null) {
             return new ResponseEntity<>("User with that username already exists", HttpStatus.OK);
@@ -39,7 +39,7 @@ public class UserController {
 
     @GetMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user) {
-        User isContained = userService.findUserById(user.getNickname());
+        User isContained = userService.findUserById(user.getId());
 
         if (isContained == null) {
             return new ResponseEntity<>("Wrong username or wrong password", HttpStatus.NOT_FOUND);
