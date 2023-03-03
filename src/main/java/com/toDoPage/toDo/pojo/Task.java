@@ -5,8 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
 
@@ -17,10 +19,11 @@ import java.util.UUID;
 public class Task {
     @Id
     private String id;
-
-    @Column(name = "description")
+    @NotBlank(message = "Description cannot be blank")
+    @NonNull
+    @Column(name = "description", nullable = false)
     private String description;
-    @Column(name = "completionStatus")
+    @Column(name = "completionStatus", nullable = false)
     private boolean completionStatus;
 
 

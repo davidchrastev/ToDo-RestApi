@@ -5,8 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
 
@@ -19,11 +21,19 @@ public class User {
     @Id
     private String id;
 
-    @Column(name = "nickname")
+    @NotBlank(message = "Nickname cannot be blank")
+    @NonNull
+    @Column(name = "nickname", nullable = false)
     private String nickname;
-    @Column(name = "email")
+
+    @NotBlank(message = "Email cannot be blank")
+    @NonNull
+    @Column(name = "email", nullable = false)
     private String email;
-    @Column(name = "password")
+
+    @NotBlank(message = "Password cannot be blank")
+    @NonNull
+    @Column(name = "password", nullable = false)
     private String password;
 
 
