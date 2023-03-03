@@ -26,15 +26,27 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
-        User registeredUser = userService.registerUser(user);
-        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+    public ResponseEntity<String> register(@RequestBody User user) {
+        User isContained = userService.findUserById(user.getNickname());
+
+        if (isContained != null) {
+            return new ResponseEntity<>("User with that username already exists", HttpStatus.CREATED);
+        } else {
+            userService.registerUser(user);
+            return new ResponseEntity<>("Successfully created user with nickname " + user.getNickname(), HttpStatus.CREATED);
+        }
     }
 
     @GetMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User user) {
-        Optional<User> optionalNickname = Optional.ofNullable(userService.findUserById(user.getId()));
-        return optionalNickname.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<String> login(@RequestBody User user) {
+        User isContained = userService.findUserById(user.getNickname());
+
+        if (isContained == null) {
+            return new ResponseEntity<>("Wrong username or wrong password", HttpStatus.CREATED);
+        } else {
+            userService.registerUser(user);
+            return new ResponseEntity<>("Successfully logged  " + user.getNickname(), HttpStatus.CREATED);
+        }
     }
 
 }
