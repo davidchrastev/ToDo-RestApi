@@ -1,9 +1,6 @@
 package com.toDoPage.toDo.pojo;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -25,6 +22,10 @@ public class Task {
     private String description;
     @Column(name = "completionStatus", nullable = false)
     private boolean completionStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "nickname", referencedColumnName = "id")
+    private User user;
 
 
     public Task() {

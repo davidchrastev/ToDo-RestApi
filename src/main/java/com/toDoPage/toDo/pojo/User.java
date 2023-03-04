@@ -1,16 +1,13 @@
 package com.toDoPage.toDo.pojo;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 import java.util.UUID;
-
 
 @Entity
 @Table(name = "users")
@@ -36,6 +33,9 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @OneToMany(mappedBy = "users")
+    private List<Task> tasks;
+
 
 
 
@@ -45,3 +45,4 @@ public class User {
 
 
 }
+
