@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -18,35 +19,40 @@ public class UserController {
     @Autowired
     UserService userService;
 
-
-    @GetMapping("/get/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id) {
-        Optional<User> optionalTask = Optional.ofNullable(userService.findUserById(id));
-        return optionalTask.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
-        User isContained = userService.findUserById(user.getId());
+        String nickname = user.getUserNickName();
+        String password = user.getPassword();
 
+        User isContained = userService.findByNickName(nickname);
         if (isContained != null) {
-            return new ResponseEntity<>("User with that username already exists", HttpStatus.OK);
+            return new ResponseEntity<>("User with that username already exists", HttpStatus.CONFLICT);
         } else {
             userService.registerUser(user);
-            return new ResponseEntity<>("Successfully created user with nickname " + user.getNickname(), HttpStatus.CREATED);
+            return new ResponseEntity<>("Successfully created user with nickname " + nickname, HttpStatus.CREATED);
         }
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        User isContained = userService.findUserById(user.getId());
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody Map<String, String> loginData) {
+        String nickname = loginData.get("nickname");
+        String password = loginData.get("password");
 
-        if (isContained == null) {
-            return new ResponseEntity<>("Wrong username or wrong password", HttpStatus.NOT_FOUND);
-        } else {
-            userService.registerUser(user);
-            return new ResponseEntity<>("Successfully logged  " + user.getNickname(), HttpStatus.ACCEPTED);
+        User user = userService.findByNickName(nickname);
+        if (user == null) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
+
+        if (!user.getPassword().equals(password)) {
+            return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
+        }
+
+        return new ResponseEntity<>("Successfully logged in", HttpStatus.OK);
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<String> logout() {
+        return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
     }
 
 }

@@ -6,7 +6,6 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -18,10 +17,9 @@ public class User {
     @Id
     private String id;
 
-    @NotBlank(message = "Nickname cannot be blank")
-    @NonNull
+
     @Column(name = "nickname", nullable = false)
-    private String nickname;
+    private String userNickName;
 
     @NotBlank(message = "Email cannot be blank")
     @NonNull
@@ -32,10 +30,6 @@ public class User {
     @NonNull
     @Column(name = "password", nullable = false)
     private String password;
-
-    @OneToMany(mappedBy = "users")
-    private List<Task> tasks;
-
 
 
 

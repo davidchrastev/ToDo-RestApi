@@ -23,9 +23,6 @@ public class Task {
     @Column(name = "completionStatus", nullable = false)
     private boolean completionStatus;
 
-    @ManyToOne
-    @JoinColumn(name = "nickname", referencedColumnName = "id")
-    private User user;
 
 
     public Task() {
