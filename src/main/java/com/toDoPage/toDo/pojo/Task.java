@@ -23,6 +23,10 @@ public class Task {
     @Column(name = "completionStatus", nullable = false)
     private boolean completionStatus;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
 
     public Task() {

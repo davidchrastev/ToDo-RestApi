@@ -6,6 +6,8 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -30,6 +32,10 @@ public class User {
     @NonNull
     @Column(name = "password", nullable = false)
     private String password;
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> tasks = new ArrayList<>();
 
 
 
