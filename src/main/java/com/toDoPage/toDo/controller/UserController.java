@@ -22,15 +22,14 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
         String nickname = user.getUserNickName();
-        String password = user.getPassword();
 
         User isContained = userService.findByNickName(nickname);
         if (isContained != null) {
             return new ResponseEntity<>("User with that username already exists", HttpStatus.CONFLICT);
-        } else {
+        }
             userService.registerUser(user);
             return new ResponseEntity<>("Successfully created user with nickname " + nickname, HttpStatus.CREATED);
-        }
+
     }
 
     @PostMapping("/login")
