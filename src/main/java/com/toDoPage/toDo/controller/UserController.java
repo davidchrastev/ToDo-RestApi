@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -20,33 +19,33 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
+    public ResponseEntity<User> register(@RequestBody User user) {
         String nickname = user.getUserNickName();
 
         User isContained = userService.findByNickName(nickname);
         if (isContained != null) {
-            return new ResponseEntity<>("User with that username already exists", HttpStatus.CONFLICT);
+            return new ResponseEntity<>(isContained, HttpStatus.CONFLICT);
         }
-            userService.registerUser(user);
-            return new ResponseEntity<>("Successfully created user with nickname " + nickname, HttpStatus.CREATED);
+        userService.registerUser(user);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
 
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> loginData) {
+    public ResponseEntity<User> login(@RequestBody Map<String, String> loginData) {
         String nickname = loginData.get("nickname");
         String password = loginData.get("password");
 
         User user = userService.findByNickName(nickname);
         if (user == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
         if (!user.getPassword().equals(password)) {
-            return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(user, HttpStatus.UNAUTHORIZED);
         }
 
-        return new ResponseEntity<>("Successfully logged in", HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/logout")

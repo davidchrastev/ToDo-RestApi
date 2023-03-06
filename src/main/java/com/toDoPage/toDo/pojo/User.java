@@ -8,39 +8,49 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 @Getter
 @Setter
 public class User {
 
     @Id
-    private String id;
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
 
-    @Column(name = "nickname", nullable = false)
+    @Column(nullable = false)
     private String userNickName;
 
     @NotBlank(message = "Email cannot be blank")
     @NonNull
-    @Column(name = "email", nullable = false)
+    @Column(nullable = false)
     private String email;
 
     @NotBlank(message = "Password cannot be blank")
     @NonNull
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
+    public void addTask(Task task) {
+        tasks.add(task);
+        task.setUser(this);
+    }
+
+    public void removeTask(Task task) {
+        tasks.remove(task);
+        task.setUser(null);
+    }
 
 
     public User() {
-        this.id = UUID.randomUUID().toString();
+
     }
 
 
