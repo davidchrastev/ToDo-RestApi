@@ -36,7 +36,7 @@ public class User {
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Task> tasks = new ArrayList<>();
+    private List<Task> tasks;
 
     public void addTask(Task task) {
         tasks.add(task);
@@ -50,8 +50,10 @@ public class User {
 
 
     public User() {
-
+        this.tasks = new ArrayList<>();
     }
+
+
 
 
 }
