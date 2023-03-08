@@ -34,11 +34,18 @@ public class UserController {
         return optionalTask.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/save/task")
-    public ResponseEntity<Task> saveTask(@RequestBody Task task) {
+    @PostMapping("/save/task/{userNickName}")
+    public ResponseEntity<User> saveTaskForUser(@PathVariable String userNickName, @RequestBody Task task) {
+        User user = userService.findByNickName(userNickName);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        task.setUser(user);
         Task savedTask = taskService.saveTask(task);
-        return new ResponseEntity<>(savedTask, HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
+
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable String id, @RequestBody Task task) {

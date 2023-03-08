@@ -24,17 +24,16 @@ public class UserService {
         return optionalTask.orElse(null);
     }
 
-    public User registerUser(User user) {
+    public void registerUser(User user) {
         userRepository.save(user);
-        return user;
     }
 
     public void deleteUser(String id) {
         userRepository.deleteById(id);
     }
 
-    public User findByNickName(String nickname) {
-        return userRepository.findByUserNickName(nickname);
+    public User findByNickName(String userNickName) {
+        return userRepository.findByUserNickName(userNickName);
     }
 
 }
