@@ -48,30 +48,12 @@ public class User {
         task.setUser(null);
     }
 
-    public void updateTask(Task task) {
-        int index = findTaskIndex(task);
-        if (index == -1) {
-            throw new IllegalArgumentException();
-        }
-        tasks.set(index, task);
-    }
-
 
     public User() {
         this.tasks = new ArrayList<>();
-    }
-
-    public int findTaskIndex(Task task) {
-        for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i).equals(task)) {
-                return i;
-            }
-        }
-        return -1;
     }
 
 
 
 
 }
-

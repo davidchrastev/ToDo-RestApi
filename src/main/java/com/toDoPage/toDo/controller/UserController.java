@@ -1,87 +1,56 @@
 package com.toDoPage.toDo.controller;
 
-import com.toDoPage.toDo.pojo.Task;
 import com.toDoPage.toDo.pojo.User;
-import com.toDoPage.toDo.service.TaskService;
 import com.toDoPage.toDo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/user")
 public class UserController {
 
 
-    //postman http://localhost:8080/api/tasks/
+    //postman http://localhost:8080/api/user
     @Autowired
-    private TaskService taskService;
-    @Autowired
-    private UserService userService;
+    UserService userService;
 
-    @GetMapping("/task/all")
-    public ResponseEntity<User> getAllTasks(@PathVariable String userNickName) {
-        return new ResponseEntity<>(userService.findByNickName(userNickName), HttpStatus.OK);
-    }
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody User user) {
+        String nickname = user.getUserNickName();
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable String id) {
-        Optional<Task> optionalTask = Optional.ofNullable(taskService.findTaskById(id));
-        return optionalTask.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PostMapping("/save/task/{userNickName}")
-    public ResponseEntity<User> saveTaskForUser(@PathVariable String userNickName, @RequestBody Task task) {
-        User user = userService.findByNickName(userNickName);
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        User isContained = userService.findByNickName(nickname);
+        if (isContained != null) {
+            return new ResponseEntity<>(isContained, HttpStatus.CONFLICT);
         }
-        task.setUser(user);
-        Task savedTask = taskService.saveTask(task);
+        userService.registerUser(user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
+
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody Map<String, String> loginData) {
+        String nickname = loginData.get("nickname");
+        String password = loginData.get("password");
 
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable String id, @RequestBody Task task) {
-        Optional<Task> optionalTask = Optional.ofNullable(taskService.findTaskById(id));
-        if (optionalTask.isPresent()) {
-            Task existingTask = optionalTask.get();
-            existingTask.setDescription(task.getDescription());
-            existingTask.setCompletionStatus(task.isCompletionStatus());
-            Task updatedTask = taskService.saveTask(existingTask);
-            return ResponseEntity.ok(updatedTask);
-        } else {
-            return ResponseEntity.notFound().build();
+        User user = userService.findByNickName(nickname);
+        if (user == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-    }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable String id) {
-        Optional<Task> optionalTask = Optional.ofNullable(taskService.findTaskById(id));
-        if (optionalTask.isPresent()) {
-            taskService.deleteTask(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+        if (!user.getPassword().equals(password)) {
+            return new ResponseEntity<>(user, HttpStatus.UNAUTHORIZED);
         }
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping("/sortedByNotCompletedCompilation/all")
-    public List<Task> getTasksThatAreNotCompleted() {
-        return taskService.findAllTasks().stream().filter(e -> !e.isCompletionStatus())
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping("/sortedByCompletedCompilation/all")
-    public List<Task> getTasksThatAreCompleted() {
-        return taskService.findAllTasks().stream().filter(Task::isCompletionStatus)
-                .collect(Collectors.toList());
+    @GetMapping("/logout")
+    public ResponseEntity<String> logout() {
+        return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
     }
 
 }
