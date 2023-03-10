@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 @Setter
 public class User {
@@ -22,7 +22,7 @@ public class User {
 
 
     @Column(nullable = false)
-    private String userNickName;
+    private String username;
 
     @NotBlank(message = "Email cannot be blank")
     @NonNull

@@ -20,9 +20,9 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
-        String nickname = user.getUserNickName();
+        String nickname = user.getUsername();
 
-        User isContained = userService.findByNickName(nickname);
+        User isContained = userService.findByUserName(nickname);
         if (isContained != null) {
             return new ResponseEntity<>(isContained, HttpStatus.CONFLICT);
         }
@@ -36,7 +36,7 @@ public class UserController {
         String nickname = loginData.get("nickname");
         String password = loginData.get("password");
 
-        User user = userService.findByNickName(nickname);
+        User user = userService.findByUserName(nickname);
         if (user == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
