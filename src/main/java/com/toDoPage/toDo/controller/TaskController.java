@@ -1,7 +1,9 @@
 package com.toDoPage.toDo.controller;
 
 import com.toDoPage.toDo.pojo.Task;
+import com.toDoPage.toDo.pojo.User;
 import com.toDoPage.toDo.service.TaskService;
+import com.toDoPage.toDo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,12 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/task/all")
-    public List<Task> getAllTasks() {
-        return taskService.findAllTasks();
+    public List<Task> getAllTasks(@RequestBody User user) {
+        return user.getTasks();
     }
 
     @GetMapping("/get/{id}")
@@ -31,9 +36,11 @@ public class TaskController {
     }
 
     @PostMapping("/save/task")
-    public ResponseEntity<Task> saveTask(@RequestBody Task task) {
-        Task savedTask = taskService.saveTask(task);
-        return new ResponseEntity<>(savedTask, HttpStatus.CREATED);
+    public ResponseEntity<User> saveTask(@PathVariable String id, @RequestBody Task task) {
+        User user = userService.findUserById(id);
+        task.setUser(user);
+        user.addTask(task);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
@@ -51,7 +58,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable String id) {
+    public ResponseEntity<User> deleteTask(@PathVariable String id, @PathVariable String taskId) {
         Optional<Task> optionalTask = Optional.ofNullable(taskService.findTaskById(id));
         if (optionalTask.isPresent()) {
             taskService.deleteTask(id);
