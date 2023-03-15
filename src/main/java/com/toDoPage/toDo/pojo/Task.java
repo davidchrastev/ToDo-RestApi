@@ -22,7 +22,7 @@ public class Task {
     @Column(nullable = false)
     private boolean completionStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 

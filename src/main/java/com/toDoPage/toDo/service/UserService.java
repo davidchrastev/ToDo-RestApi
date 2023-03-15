@@ -1,7 +1,9 @@
 package com.toDoPage.toDo.service;
 
+import com.toDoPage.toDo.pojo.Task;
 import com.toDoPage.toDo.pojo.User;
 import com.toDoPage.toDo.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,11 @@ public class UserService {
 
     public User findByNickName(String nickname) {
         return userRepository.findByUserNickName(nickname);
+    }
+
+    @Transactional
+    public void saveTask(User user, Task task) {
+        user.addTask(task);
     }
 
 }

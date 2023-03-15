@@ -1,6 +1,7 @@
 package com.toDoPage.toDo.pojo;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -35,9 +36,11 @@ public class User {
     private String password;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
+
+    @Transactional
     public void addTask(Task task) {
         tasks.add(task);
         task.setUser(this);
@@ -52,6 +55,8 @@ public class User {
     public User() {
 
     }
-
-
+    @Transactional
+    public List<Task> getTasks() {
+        return tasks;
+    }
 }

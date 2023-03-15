@@ -38,8 +38,7 @@ public class TaskController {
     @PostMapping("/save/task/{id}")
     public ResponseEntity<User> saveTask(@PathVariable String id, @RequestBody Task task) {
         User user = userService.findUserById(id);
-        Task savedTask = taskService.saveTask(task);
-        user.addTask(task);
+        userService.saveTask(user, task);
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
