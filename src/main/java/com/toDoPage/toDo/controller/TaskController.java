@@ -25,8 +25,9 @@ public class TaskController {
     private UserService userService;
 
     @GetMapping("/task/all/{id}")
-    public List<Task> getAllTasks(@PathVariable String id) {
-        return userService.findUserById(id).getTasks();
+    public ResponseEntity<User> getAllTasks(@PathVariable String id) {
+        User user = userService.findUserById(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/get/{id}")
@@ -38,7 +39,7 @@ public class TaskController {
     @PostMapping("/save/task/{id}")
     public ResponseEntity<User> saveTask(@PathVariable String id, @RequestBody Task task) {
         User user = userService.findUserById(id);
-        userService.saveTask(user, task);
+        userService.saveTaskToUser(id, task);
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }

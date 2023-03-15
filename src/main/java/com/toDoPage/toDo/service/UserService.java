@@ -21,6 +21,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
+
+    @Transactional
     public User findUserById(String id) {
         Optional<User> optionalTask = userRepository.findById(id);
         return optionalTask.orElse(null);
@@ -39,8 +41,11 @@ public class UserService {
     }
 
     @Transactional
-    public void saveTask(User user, Task task) {
-        user.addTask(task);
+    public void saveTaskToUser(String userId, Task task) {
+        User user = findUserById(userId);
+        user.getTasks().add(task);
+        task.setUser(user);
+        userRepository.save(user);
     }
 
 }
