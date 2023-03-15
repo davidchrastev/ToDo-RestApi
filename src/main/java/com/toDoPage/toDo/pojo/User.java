@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 @Getter
 @Setter
 public class User {
@@ -22,7 +22,7 @@ public class User {
 
 
     @Column(nullable = false)
-    private String username;
+    private String userNickName;
 
     @NotBlank(message = "Email cannot be blank")
     @NonNull
@@ -36,7 +36,7 @@ public class User {
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<>();
 
     public void addTask(Task task) {
         tasks.add(task);
@@ -50,10 +50,8 @@ public class User {
 
 
     public User() {
-        this.tasks = new ArrayList<>();
+
     }
-
-
 
 
 }

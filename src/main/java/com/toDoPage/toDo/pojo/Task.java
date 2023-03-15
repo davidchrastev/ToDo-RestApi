@@ -7,7 +7,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "task")
 @Getter
 @Setter
 public class Task {

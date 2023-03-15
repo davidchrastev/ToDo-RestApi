@@ -24,9 +24,9 @@ public class TaskController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/task/all")
-    public List<Task> getAllTasks(@RequestBody User user) {
-        return user.getTasks();
+    @GetMapping("/task/all/{id}")
+    public List<Task> getAllTasks(@PathVariable String id) {
+        return userService.findUserById(id).getTasks();
     }
 
     @GetMapping("/get/{id}")
@@ -35,11 +35,12 @@ public class TaskController {
         return optionalTask.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/save/task")
+    @PostMapping("/save/task/{id}")
     public ResponseEntity<User> saveTask(@PathVariable String id, @RequestBody Task task) {
         User user = userService.findUserById(id);
-        task.setUser(user);
+        Task savedTask = taskService.saveTask(task);
         user.addTask(task);
+
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
@@ -58,7 +59,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<User> deleteTask(@PathVariable String id, @PathVariable String taskId) {
+    public ResponseEntity<Void> deleteTask(@PathVariable String id) {
         Optional<Task> optionalTask = Optional.ofNullable(taskService.findTaskById(id));
         if (optionalTask.isPresent()) {
             taskService.deleteTask(id);
