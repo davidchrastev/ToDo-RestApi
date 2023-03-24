@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,10 +45,10 @@ public class TaskController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
+    public ResponseEntity<String> updateTask(@PathVariable Long id, @RequestBody Task task) {
         User user = userService.findUserById(id);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>("Successfully saved tasks",HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -57,17 +59,22 @@ public class TaskController {
     }
 
     @GetMapping("/sortedByNotCompletedCompilation/all/{id}")
-    public List<Task> getTasksThatAreNotCompleted(@PathVariable Long id) {
+    public List<String> getTasksThatAreNotCompleted(@PathVariable Long id) {
         User user = userService.findUserById(id);
-        return userService.getAll(user).stream().filter(Task::isCompletionStatus)
-                .collect(Collectors.toList());
+        List<String> tasks = new ArrayList<>();
+        user.getTasks()
+                .forEach(e -> tasks.add(e.getDescription() + " " +  e.isCompletionStatus()));
+        return tasks;
     }
 
     @GetMapping("/sortedByCompletedCompilation/all/{id}")
-    public List<Task> getTasksThatAreCompleted(@PathVariable Long id) {
+    public List<String> getTasksThatAreCompleted(@PathVariable Long id) {
         User user = userService.findUserById(id);
-        return userService.getAll(user).stream().filter(Task::isCompletionStatus)
-                .collect(Collectors.toList());
+        List<String> tasks = new ArrayList<>();
+        user.getTasks()
+                .forEach(e -> tasks.add(e.getDescription() + " " +  e.isCompletionStatus()));
+        return tasks;
     }
+
 
 }
