@@ -47,4 +47,33 @@ public class UserService {
         task.setUser(user);
     }
 
+    @Transactional
+    public void updateTask(Long userId, Task task) {
+        User user = findUserById(userId);
+        int index = findByIndex(user, task);
+        user.getTasks().get(index);
+    }
+
+
+    @Transactional
+    public List<Task> getAll(User user) {
+        return user.getTasks();
+    }
+
+    public int findByIndex(User user, Task task) {
+
+        for (int i = 0; i < getAll(user).size(); i++) {
+            if (getAll(user).get(i).equals(task)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Transactional
+    public void deleteTask(Long userId, Task task) {
+        User user = findUserById(userId);
+        user.getTasks().remove(task);
+    }
+
 }

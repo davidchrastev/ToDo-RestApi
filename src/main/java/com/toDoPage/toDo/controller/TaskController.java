@@ -40,47 +40,34 @@ public class TaskController {
     public ResponseEntity<User> saveTask(@PathVariable Long id, @RequestBody Task task) {
         User user = userService.findUserById(id);
         userService.saveTaskToUser(id, task);
-
-
-        user.getTasks().forEach(System.out::println);
-
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable String id, @RequestBody Task task) {
-        Optional<Task> optionalTask = Optional.ofNullable(taskService.findTaskById(id));
-        if (optionalTask.isPresent()) {
-            Task existingTask = optionalTask.get();
-            existingTask.setDescription(task.getDescription());
-            existingTask.setCompletionStatus(task.isCompletionStatus());
-            Task updatedTask = taskService.saveTask(existingTask);
-            return ResponseEntity.ok(updatedTask);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task) {
+        User user = userService.findUserById(id);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable String id) {
-        Optional<Task> optionalTask = Optional.ofNullable(taskService.findTaskById(id));
-        if (optionalTask.isPresent()) {
-            taskService.deleteTask(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id, @RequestBody Task task) {
+        User user = userService.findUserById(id);
+        userService.deleteTask(id, task);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/sortedByNotCompletedCompilation/all")
-    public List<Task> getTasksThatAreNotCompleted() {
-        return taskService.findAllTasks().stream().filter(e -> !e.isCompletionStatus())
+    @GetMapping("/sortedByNotCompletedCompilation/all/{id}")
+    public List<Task> getTasksThatAreNotCompleted(@PathVariable Long id) {
+        User user = userService.findUserById(id);
+        return userService.getAll(user).stream().filter(Task::isCompletionStatus)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/sortedByCompletedCompilation/all")
-    public List<Task> getTasksThatAreCompleted() {
-        return taskService.findAllTasks().stream().filter(Task::isCompletionStatus)
+    @GetMapping("/sortedByCompletedCompilation/all/{id}")
+    public List<Task> getTasksThatAreCompleted(@PathVariable Long id) {
+        User user = userService.findUserById(id);
+        return userService.getAll(user).stream().filter(Task::isCompletionStatus)
                 .collect(Collectors.toList());
     }
 
