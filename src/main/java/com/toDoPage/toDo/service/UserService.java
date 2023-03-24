@@ -44,6 +44,7 @@ public class UserService {
     public void saveTaskToUser(Long userId, Task task) {
         User user = findUserById(userId);
         user.getTasks().add(task);
+        task.setUser(user);
     }
 
 }

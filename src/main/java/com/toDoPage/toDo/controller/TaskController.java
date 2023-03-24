@@ -41,7 +41,10 @@ public class TaskController {
         User user = userService.findUserById(id);
         userService.saveTaskToUser(id, task);
 
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+
+        user.getTasks().forEach(System.out::println);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

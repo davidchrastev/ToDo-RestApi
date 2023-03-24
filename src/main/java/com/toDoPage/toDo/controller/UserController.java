@@ -39,8 +39,9 @@ public class UserController {
         String password = loginData.get("password");
 
         User user = userService.findByUserEmail(userEmail);
+
         if (user == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         if (!user.getPassword().equals(password)) {
