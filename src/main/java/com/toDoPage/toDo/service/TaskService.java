@@ -1,6 +1,6 @@
 package com.toDoPage.toDo.service;
 
-import com.toDoPage.toDo.pojo.Task;
+import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

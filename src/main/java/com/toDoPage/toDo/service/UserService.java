@@ -1,7 +1,7 @@
 package com.toDoPage.toDo.service;
 
-import com.toDoPage.toDo.pojo.Task;
-import com.toDoPage.toDo.pojo.User;
+import com.toDoPage.toDo.entities.Task;
+import com.toDoPage.toDo.entities.User;
 import com.toDoPage.toDo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class UserService {
 
 
     @Transactional
-    public User findUserById(String id) {
+    public User findUserById(Long id) {
         Optional<User> optionalTask = userRepository.findById(id);
         return optionalTask.orElse(null);
     }
@@ -32,20 +32,18 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void deleteUser(String id) {
+    public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
-    public User findByNickName(String nickname) {
-        return userRepository.findByUserNickName(nickname);
+    public User findByUserEmail(String userEmail) {
+        return userRepository.findByEmail(userEmail);
     }
 
     @Transactional
-    public void saveTaskToUser(String userId, Task task) {
+    public void saveTaskToUser(Long userId, Task task) {
         User user = findUserById(userId);
         user.getTasks().add(task);
-        task.setUser(user);
-        userRepository.save(user);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.toDoPage.toDo.controller;
 
-import com.toDoPage.toDo.pojo.Task;
-import com.toDoPage.toDo.pojo.User;
+import com.toDoPage.toDo.entities.Task;
+import com.toDoPage.toDo.entities.User;
 import com.toDoPage.toDo.service.TaskService;
 import com.toDoPage.toDo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class TaskController {
     private UserService userService;
 
     @GetMapping("/task/all/{id}")
-    public ResponseEntity<User> getAllTasks(@PathVariable String id) {
+    public ResponseEntity<User> getAllTasks(@PathVariable Long id) {
         User user = userService.findUserById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
@@ -37,7 +37,7 @@ public class TaskController {
     }
 
     @PostMapping("/save/task/{id}")
-    public ResponseEntity<User> saveTask(@PathVariable String id, @RequestBody Task task) {
+    public ResponseEntity<User> saveTask(@PathVariable Long id, @RequestBody Task task) {
         User user = userService.findUserById(id);
         userService.saveTaskToUser(id, task);
 

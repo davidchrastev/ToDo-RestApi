@@ -1,6 +1,7 @@
 package com.toDoPage.toDo.controller;
 
-import com.toDoPage.toDo.pojo.User;
+import com.toDoPage.toDo.entities.Task;
+import com.toDoPage.toDo.entities.User;
 import com.toDoPage.toDo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,23 +21,24 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user) {
-        String nickname = user.getUserNickName();
+        String email = user.getEmail();
 
-        User isContained = userService.findByNickName(nickname);
+        User isContained = userService.findByUserEmail(email);
         if (isContained != null) {
-            return new ResponseEntity<>(isContained, HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         userService.registerUser(user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
+
 
     }
 
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody Map<String, String> loginData) {
-        String nickname = loginData.get("nickname");
+        String userEmail = loginData.get("email");
         String password = loginData.get("password");
 
-        User user = userService.findByNickName(nickname);
+        User user = userService.findByUserEmail(userEmail);
         if (user == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
@@ -44,6 +46,7 @@ public class UserController {
         if (!user.getPassword().equals(password)) {
             return new ResponseEntity<>(user, HttpStatus.UNAUTHORIZED);
         }
+
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }

@@ -1,19 +1,20 @@
-package com.toDoPage.toDo.pojo;
+package com.toDoPage.toDo.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
+
 import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "task")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Task {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "Description cannot be blank")
     @NonNull
@@ -26,11 +27,5 @@ public class Task {
     @JoinColumn(name = "user_id")
     private User user;
 
-
-
-
-    public Task() {
-
-    }
 
 }

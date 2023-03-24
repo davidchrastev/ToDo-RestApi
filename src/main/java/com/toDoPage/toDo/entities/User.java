@@ -1,19 +1,19 @@
-package com.toDoPage.toDo.pojo;
+package com.toDoPage.toDo.entities;
 
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -23,7 +23,10 @@ public class User {
 
 
     @Column(nullable = false)
-    private String userNickName;
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
 
     @NotBlank(message = "Email cannot be blank")
     @NonNull
@@ -39,24 +42,4 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
-
-    @Transactional
-    public void addTask(Task task) {
-        tasks.add(task);
-        task.setUser(this);
-    }
-
-    public void removeTask(Task task) {
-        tasks.remove(task);
-        task.setUser(null);
-    }
-
-
-    public User() {
-
-    }
-    @Transactional
-    public List<Task> getTasks() {
-        return tasks;
-    }
 }
