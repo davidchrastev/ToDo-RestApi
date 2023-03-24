@@ -1,6 +1,5 @@
 package com.toDoPage.toDo.controller;
 
-import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.entities.User;
 import com.toDoPage.toDo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class UserController {
     public ResponseEntity<User> register(@RequestBody User user) {
         String email = user.getEmail();
 
-        User isContained = userService.findByUserEmail(email);
+        User isContained = userService.findByEmail(email);
         if (isContained != null) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -34,27 +33,30 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody Map<String, String> loginData) {
-        String userEmail = loginData.get("email");
+    public ResponseEntity<String> login(@RequestBody Map<String, String> loginData) {
+        String email = loginData.get("email");
         String password = loginData.get("password");
 
-        User user = userService.findByUserEmail(userEmail);
+        User user = userService.findByEmail(email);
 
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         if (!user.getPassword().equals(password)) {
-            return new ResponseEntity<>(user, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
+        System.out.println(user.getEmail());
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(user.getFirstName() + " " + user.getLastName(), HttpStatus.OK);
     }
 
     @GetMapping("/logout")
     public ResponseEntity<String> logout() {
         return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
     }
+
+
 
 }
