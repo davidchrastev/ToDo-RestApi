@@ -2,6 +2,7 @@ package com.toDoPage.toDo.controller;
 
 import com.toDoPage.toDo.dtos.UserDTO;
 import com.toDoPage.toDo.entities.User;
+import com.toDoPage.toDo.service.LoginService;
 import com.toDoPage.toDo.service.RegistrationService;
 import com.toDoPage.toDo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,13 @@ public class UserController {
     //postman http://localhost:8080/user
 
     private final UserService userService;
+    private final LoginService loginService;
     private final RegistrationService registrationService;
     @Autowired
-    public UserController(UserService userService, RegistrationService registrationService) {
+    public UserController(UserService userService, RegistrationService registrationService, LoginService loginService) {
         this.userService = userService;
         this.registrationService = registrationService;
+        this.loginService = loginService;
     }
 
     @PostMapping("/register")
@@ -38,23 +41,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> loginData) {
-        String email = loginData.get("email");
-        String password = loginData.get("password");
-
-        User user = userService.findByEmail(email);
-
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        if (!user.getPassword().equals(password)) {
+    public ResponseEntity<UserDTO> login(@RequestBody Map<String, String> loginData) {
+        if (loginService.login(loginData) == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        System.out.println(user.getEmail());
-
-        return new ResponseEntity<>(user.getFirstName() + " " + user.getLastName(), HttpStatus.OK);
+        return new ResponseEntity<>(UserDTO.convertUser(loginService.login(loginData)), HttpStatus.OK);
     }
 
     @GetMapping("/logout")

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,11 +23,16 @@ public class TaskController {
 
 
     //postman http://localhost:8080/tasks
-    @Autowired
-    private TaskService taskService;
+
+
+    private final UserService userService;
+    private final TaskService taskService;
 
     @Autowired
-    private UserService userService;
+    public TaskController(UserService userService, TaskService taskService) {
+        this.userService = userService;
+        this.taskService = taskService;
+    }
 
     @GetMapping("/task/all/{id}")
     public ResponseEntity<UserDTO> getAllTasks(@PathVariable Long id) {
@@ -57,13 +63,10 @@ public class TaskController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<UserDTO> deleteTask(@PathVariable Long id) {
-        Task task = taskService.findTaskById(id);
-        task.setUser(null);
-        taskService.deleteTask(task.getId());
+//        System.out.println(userService.getAll(id));
+        User user = userService.findUserById(id);
 
-
-
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/sortedByNotCompletedCompilation/all/{id}")
