@@ -74,6 +74,7 @@ public class UserService {
     public void deleteTask(Long userId, Task task) {
         User user = findUserById(userId);
         user.getTasks().remove(task);
+        task.setUser(null);
     }
 
     public boolean exists(User user) {

@@ -1,5 +1,6 @@
 package com.toDoPage.toDo.controller;
 
+import com.toDoPage.toDo.dtos.TaskDTO;
 import com.toDoPage.toDo.dtos.UserDTO;
 import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.entities.User;
@@ -35,9 +36,16 @@ public class TaskController {
     }
 
     @PostMapping("/save/task/{id}")
-    public ResponseEntity<User> saveTask(@PathVariable Long id, @RequestBody Task task) {
+    public ResponseEntity<UserDTO> saveTask(@PathVariable Long id, @RequestBody Task task) {
+        User user = userService.findUserById(id);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         userService.saveTaskToUser(id, task);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+
+        return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
@@ -48,9 +56,13 @@ public class TaskController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id, @RequestBody Task task) {
-        User user = userService.findUserById(id);
-        userService.deleteTask(id, task);
+    public ResponseEntity<UserDTO> deleteTask(@PathVariable Long id) {
+        Task task = taskService.findTaskById(id);
+        task.setUser(null);
+        taskService.deleteTask(task.getId());
+
+
+
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
