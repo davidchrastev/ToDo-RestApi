@@ -15,11 +15,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/tasks")
 public class TaskController {
 
 
-    //postman http://localhost:8080/api/tasks/
+    //postman http://localhost:8080/tasks
     @Autowired
     private TaskService taskService;
 

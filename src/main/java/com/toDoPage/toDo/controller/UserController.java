@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 public class UserController {
 
 
-    //postman http://localhost:8080/api/user
+    //postman http://localhost:8080/user
     @Autowired
     UserService userService;
 
