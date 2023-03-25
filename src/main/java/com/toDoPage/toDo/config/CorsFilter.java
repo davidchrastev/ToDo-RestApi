@@ -1,4 +1,4 @@
-package config;
+package com.toDoPage.toDo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
