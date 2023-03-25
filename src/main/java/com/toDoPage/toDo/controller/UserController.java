@@ -1,6 +1,8 @@
 package com.toDoPage.toDo.controller;
 
+import com.toDoPage.toDo.dtos.UserDTO;
 import com.toDoPage.toDo.entities.User;
+import com.toDoPage.toDo.service.RegistrationService;
 import com.toDoPage.toDo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,21 +17,26 @@ public class UserController {
 
 
     //postman http://localhost:8080/user
+
+    private final UserService userService;
+    private final RegistrationService registrationService;
     @Autowired
-    UserService userService;
+    public UserController(UserService userService, RegistrationService registrationService) {
+        this.userService = userService;
+        this.registrationService = registrationService;
+    }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
-        String email = user.getEmail();
+    public ResponseEntity<UserDTO> register(@RequestBody User user) {
+        User check = userService.findByEmail(user.getEmail());
 
-        User isContained = userService.findByEmail(email);
-        if (isContained != null) {
+        if (check != null) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-        userService.registerUser(user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
 
+        registrationService.register(user);
 
+        return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
