@@ -1,5 +1,6 @@
 package com.toDoPage.toDo.controller;
 
+import com.toDoPage.toDo.dtos.UserDTO;
 import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.entities.User;
 import com.toDoPage.toDo.service.TaskService;
@@ -27,15 +28,10 @@ public class TaskController {
     private UserService userService;
 
     @GetMapping("/task/all/{id}")
-    public ResponseEntity<User> getAllTasks(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getAllTasks(@PathVariable Long id) {
         User user = userService.findUserById(id);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
-    @GetMapping("/get/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable String id) {
-        Optional<Task> optionalTask = Optional.ofNullable(taskService.findTaskById(id));
-        return optionalTask.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        UserDTO userDTO = UserDTO.convertUser(user);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @PostMapping("/save/task/{id}")

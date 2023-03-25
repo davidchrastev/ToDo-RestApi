@@ -16,8 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 public class UserDTO {
 
-    private Long id;
-
     private String firstName;
 
     private String lastName;
@@ -26,7 +24,7 @@ public class UserDTO {
 
     private String password;
 
-    private List<Task> tasks = new ArrayList<>();
+    private List<TaskDTO> tasks = new ArrayList<>();
 
     public static UserDTO convertUser(User user) {
         UserDTO userDTO = new UserDTO();
@@ -35,7 +33,10 @@ public class UserDTO {
         userDTO.lastName = user.getLastName();
         userDTO.email = user.getEmail();
         userDTO.password = user.getPassword();
-        userDTO.tasks = user.getTasks();
+
+        for (Task task : user.getTasks()) {
+            userDTO.tasks.add(TaskDTO.convertTask(task));
+        }
 
         return userDTO;
     }

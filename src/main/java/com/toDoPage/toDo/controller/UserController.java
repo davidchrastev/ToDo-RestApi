@@ -28,14 +28,12 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody User user) {
-        User check = userService.findByEmail(user.getEmail());
 
-        if (check != null) {
+        if (userService.exists(user)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
         registrationService.register(user);
-
         return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.CREATED);
     }
 

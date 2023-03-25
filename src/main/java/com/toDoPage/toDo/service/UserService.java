@@ -76,4 +76,8 @@ public class UserService {
         user.getTasks().remove(task);
     }
 
+    public boolean exists(User user) {
+        return findByEmail(user.getEmail()) != null;
+    }
+
 }

@@ -14,12 +14,12 @@ public class RegistrationService {
         this.userService = userService;
     }
 
-    public void register(User user) {
-        String email = user.getEmail();
-        User isContained = userService.findByEmail(email);
-
-        if (isContained == null) {
+    public boolean register(User user) {
+        if (userService.exists(user)) {
+            return true;
+        } else {
             userService.registerUser(user);
+            return false;
         }
     }
 }
