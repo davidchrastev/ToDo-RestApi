@@ -37,8 +37,12 @@ public class TaskController {
     @GetMapping("/task/all/{id}")
     public ResponseEntity<UserDTO> getAllTasks(@PathVariable Long id) {
         User user = userService.findUserById(id);
-        UserDTO userDTO = UserDTO.convertUser(user);
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.OK);
     }
 
     @PostMapping("/save/task/{id}")
@@ -54,37 +58,47 @@ public class TaskController {
         return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateTask(@PathVariable Long id, @RequestBody Task task) {
-        User user = userService.findUserById(id);
-
-        return new ResponseEntity<>("Successfully saved tasks",HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<UserDTO> deleteTask(@PathVariable Long id) {
-//        System.out.println(userService.getAll(id));
-        User user = userService.findUserById(id);
-
-        return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.NO_CONTENT);
-    }
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<String> updateTask(@PathVariable Long id, @RequestBody Task task) {
+//        User user = userService.findUserById(id);
+//
+//        return new ResponseEntity<>("Successfully saved tasks",HttpStatus.CREATED);
+//    }
+//
+//    @DeleteMapping("/delete/{id}")
+//    public ResponseEntity<UserDTO> deleteTask(@PathVariable Long id) {
+////        System.out.println(userService.getAll(id));
+//        User user = userService.findUserById(id);
+//
+//        return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.NO_CONTENT);
+//    }
 
     @GetMapping("/sortedByNotCompletedCompilation/all/{id}")
-    public List<String> getTasksThatAreNotCompleted(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getTasksThatAreNotCompleted(@PathVariable Long id) {
         User user = userService.findUserById(id);
-        List<String> tasks = new ArrayList<>();
-        user.getTasks()
-                .forEach(e -> tasks.add(e.getDescription() + " " +  e.isCompletionStatus()));
-        return tasks;
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        UserDTO userDTO = UserDTO.convertUser(user);
+
+        userDTO.getTasks().stream().filter(e -> !e.isCompletionStatus()).collect(Collectors.toList());
+
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @GetMapping("/sortedByCompletedCompilation/all/{id}")
-    public List<String> getTasksThatAreCompleted(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getTasksThatAreCompleted(@PathVariable Long id) {
         User user = userService.findUserById(id);
-        List<String> tasks = new ArrayList<>();
-        user.getTasks()
-                .forEach(e -> tasks.add(e.getDescription() + " " +  e.isCompletionStatus()));
-        return tasks;
+
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        UserDTO userDTO = UserDTO.convertUser(user);
+
+        userDTO.getTasks().stream().filter(TaskDTO::isCompletionStatus).collect(Collectors.toList());
+
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
 
