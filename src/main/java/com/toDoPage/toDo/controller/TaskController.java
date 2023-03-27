@@ -4,7 +4,7 @@ import com.toDoPage.toDo.dtos.TaskDTO;
 import com.toDoPage.toDo.dtos.UserDTO;
 import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.entities.User;
-import com.toDoPage.toDo.service.DeleteService;
+import com.toDoPage.toDo.service.DeleteTaskService;
 import com.toDoPage.toDo.service.TaskService;
 import com.toDoPage.toDo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,13 +25,13 @@ public class TaskController {
 
     private final UserService userService;
     private final TaskService taskService;
-    private final DeleteService deleteService;
+    private final DeleteTaskService deleteTaskService;
 
     @Autowired
-    public TaskController(UserService userService, TaskService taskService, DeleteService deleteService) {
+    public TaskController(UserService userService, TaskService taskService, DeleteTaskService deleteService) {
         this.userService = userService;
         this.taskService = taskService;
-        this.deleteService = deleteService;
+        this.deleteTaskService = deleteService;
     }
 
     @GetMapping("/task/all/{id}")
@@ -57,16 +58,29 @@ public class TaskController {
         return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.CREATED);
     }
 
-//    @PutMapping("/update/{id}")
-//    public ResponseEntity<String> updateTask(@PathVariable Long id, @RequestBody Task task) {
-//        User user = userService.findUserById(id);
-//
-//        return new ResponseEntity<>("Successfully saved tasks",HttpStatus.CREATED);
-//    }
-//
+    @PutMapping("/update/{id}")
+    public ResponseEntity<UserDTO> updateTask(@PathVariable Long id, @RequestBody Task task) {
+        User user = userService.findUserById(id);
+
+        Optional<Task> optionalTask = user.getTasks().stream()
+                .filter(t -> t.getId().equals(task.getId()))
+                .findFirst();
+
+        if (optionalTask.isPresent()) {
+            Task existingTask = optionalTask.get();
+            existingTask.setDescription(task.getDescription());
+            existingTask.setCompletionStatus(task.isCompletionStatus());
+            taskService.saveTask(existingTask);
+
+            return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @DeleteMapping("/tasks/delete")
     public ResponseEntity<UserDTO> deleteTask(@RequestBody Map<String, String> loginData) {
-        User user = deleteService.delete(loginData);
+        User user = deleteTaskService.delete(loginData);
 
         return ResponseEntity.ok().body(UserDTO.convertUser(user));
     }

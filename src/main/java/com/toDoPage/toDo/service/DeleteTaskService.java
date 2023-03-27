@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.Map;
 
 @Service
-public class DeleteService {
+public class DeleteTaskService {
 
     private final UserService userService;
     private final TaskService taskService;
 
-    public DeleteService(UserService userService, TaskService taskService) {
+    public DeleteTaskService(UserService userService, TaskService taskService) {
         this.userService = userService;
         this.taskService = taskService;
     }
