@@ -34,7 +34,7 @@ public class DeleteService {
 
         user.getTasks().remove(taskToDelete);
 
-        userService.registerUser(user);
+        userService.overwrite(user);
 
         return user;
     }
