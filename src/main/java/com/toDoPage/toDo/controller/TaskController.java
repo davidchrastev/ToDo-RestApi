@@ -4,6 +4,7 @@ import com.toDoPage.toDo.dtos.TaskDTO;
 import com.toDoPage.toDo.dtos.UserDTO;
 import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.entities.User;
+import com.toDoPage.toDo.service.DeleteService;
 import com.toDoPage.toDo.service.TaskService;
 import com.toDoPage.toDo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -22,11 +24,13 @@ public class TaskController {
 
     private final UserService userService;
     private final TaskService taskService;
+    private final DeleteService deleteService;
 
     @Autowired
-    public TaskController(UserService userService, TaskService taskService) {
+    public TaskController(UserService userService, TaskService taskService, DeleteService deleteService) {
         this.userService = userService;
         this.taskService = taskService;
+        this.deleteService = deleteService;
     }
 
     @GetMapping("/task/all/{id}")
@@ -60,13 +64,12 @@ public class TaskController {
 //        return new ResponseEntity<>("Successfully saved tasks",HttpStatus.CREATED);
 //    }
 //
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<UserDTO> deleteTask(@PathVariable Long id) {
-////        System.out.println(userService.getAll(id));
-//        User user = userService.findUserById(id);
-//
-//        return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.NO_CONTENT);
-//    }
+    @DeleteMapping("/tasks/delete")
+    public ResponseEntity<UserDTO> deleteTask(@RequestBody Map<String, String> loginData) {
+        User user = deleteService.delete(loginData);
+
+        return ResponseEntity.ok().body(UserDTO.convertUser(user));
+    }
 
     @GetMapping("/sortedByNotCompletedCompilation/all/{id}")
     public ResponseEntity<UserDTO> getTasksThatAreNotCompleted(@PathVariable Long id) {
