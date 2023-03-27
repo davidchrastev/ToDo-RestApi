@@ -2,18 +2,19 @@ package com.toDoPage.toDo.service;
 
 import com.toDoPage.toDo.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
 @Service
-public class LoginService {
+public class AuthService {
 
     private final UserService userService;
 
     @Autowired
-    public LoginService(UserService userService) {
+    public AuthService(UserService userService) {
         this.userService = userService;
     }
 
@@ -27,7 +28,7 @@ public class LoginService {
             return null;
         }
 
-        if (!user.getPassword().equals(password)) {
+        if (!BCrypt.checkpw(password, user.getPassword())) {
             return null;
         }
 

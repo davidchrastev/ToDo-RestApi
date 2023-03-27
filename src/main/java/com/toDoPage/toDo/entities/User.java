@@ -1,8 +1,8 @@
 package com.toDoPage.toDo.entities;
 
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class User {
 
     @NotBlank(message = "Email cannot be blank")
     @NonNull
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @NotBlank(message = "Password cannot be blank")

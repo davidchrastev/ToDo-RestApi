@@ -22,8 +22,6 @@ public class UserDTO {
 
     private String email;
 
-    private String password;
-
     private List<TaskDTO> tasks = new ArrayList<>();
 
     public static UserDTO convertUser(User user) {
@@ -32,7 +30,6 @@ public class UserDTO {
         userDTO.firstName = user.getFirstName();
         userDTO.lastName = user.getLastName();
         userDTO.email = user.getEmail();
-        userDTO.password = user.getPassword();
 
         for (Task task : user.getTasks()) {
             userDTO.tasks.add(TaskDTO.convertTask(task));

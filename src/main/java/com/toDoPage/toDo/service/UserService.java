@@ -5,6 +5,7 @@ import com.toDoPage.toDo.entities.User;
 import com.toDoPage.toDo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +29,10 @@ public class UserService {
         return optionalTask.orElse(null);
     }
 
+    @Transactional
     public void registerUser(User user) {
+        String passwordHash = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        user.setPassword(passwordHash);
         userRepository.save(user);
     }
 
