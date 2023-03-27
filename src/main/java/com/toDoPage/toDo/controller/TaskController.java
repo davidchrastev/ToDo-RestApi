@@ -6,6 +6,7 @@ import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.entities.User;
 import com.toDoPage.toDo.service.DeleteTaskService;
 import com.toDoPage.toDo.service.TaskService;
+import com.toDoPage.toDo.service.UpdateTaskService;
 import com.toDoPage.toDo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,11 +28,14 @@ public class TaskController {
     private final TaskService taskService;
     private final DeleteTaskService deleteTaskService;
 
+    private final UpdateTaskService updateTaskService;
+
     @Autowired
-    public TaskController(UserService userService, TaskService taskService, DeleteTaskService deleteService) {
+    public TaskController(UserService userService, TaskService taskService, DeleteTaskService deleteService, UpdateTaskService updateTaskService) {
         this.userService = userService;
         this.taskService = taskService;
         this.deleteTaskService = deleteService;
+        this.updateTaskService = updateTaskService;
     }
 
     @GetMapping("/task/all/{id}")
@@ -60,18 +64,9 @@ public class TaskController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<UserDTO> updateTask(@PathVariable Long id, @RequestBody Task task) {
-        User user = userService.findUserById(id);
+        User user = updateTaskService.updateTask(id, task);
 
-        Optional<Task> optionalTask = user.getTasks().stream()
-                .filter(t -> t.getId().equals(task.getId()))
-                .findFirst();
-
-        if (optionalTask.isPresent()) {
-            Task existingTask = optionalTask.get();
-            existingTask.setDescription(task.getDescription());
-            existingTask.setCompletionStatus(task.isCompletionStatus());
-            taskService.saveTask(existingTask);
-
+        if (user != null) {
             return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
