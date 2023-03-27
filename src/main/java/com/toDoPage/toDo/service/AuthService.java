@@ -31,7 +31,6 @@ public class AuthService {
         if (!BCrypt.checkpw(password, user.getPassword())) {
             return null;
         }
-
         return user;
     }
 }
