@@ -14,11 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TaskController {
 
 
@@ -57,9 +57,10 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
-        userService.saveTaskToUser(id, task);
+        User userConvert = userService.saveTaskToUser(id, task);
 
-        return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.CREATED);
+
+        return new ResponseEntity<>(UserDTO.convertUser(userConvert), HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")

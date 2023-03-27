@@ -50,10 +50,11 @@ public class UserService {
     }
 
     @Transactional
-    public void saveTaskToUser(Long userId, Task task) {
+    public User saveTaskToUser(Long userId, Task task) {
         User user = findUserById(userId);
         user.getTasks().add(task);
         task.setUser(user);
+        return user;
     }
 
     @Transactional
