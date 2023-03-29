@@ -24,8 +24,9 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.DELETE)
-                .hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE).hasAnyRole("ADMIN", "USER")
+                .requestMatchers(HttpMethod.POST).hasAnyRole("ADMIN", "USER")
+                .requestMatchers(HttpMethod.GET).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()
