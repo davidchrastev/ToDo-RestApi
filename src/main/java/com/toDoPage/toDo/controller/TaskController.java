@@ -22,7 +22,9 @@ import java.util.stream.Collectors;
 public class TaskController {
 
 
-    //postman http://localhost:8080/tasks
+    //postman http://localhost:8080/tasks/
+    // tasks/delete
+
 
     private final UserService userService;
     private final TaskService taskService;
