@@ -6,6 +6,7 @@ import com.toDoPage.toDo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +15,14 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    private UserRepository userRepository;
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
 
     public List<User> findAllUsers() {
@@ -30,10 +37,11 @@ public class UserService {
     }
 
     @Transactional
-    public void registerUser(User user) {
-        String passwordHash = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        user.setPassword(passwordHash);
+    public User registerUser(User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+
+        return user;
     }
 
     public void overwrite(User user) {

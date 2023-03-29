@@ -1,6 +1,7 @@
-package com.toDoPage.toDo.security;
+package com.toDoPage.toDo.security.manager;
 
 
+import com.toDoPage.toDo.security.filter.AuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,16 +22,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter();
+        authenticationFilter.setFilterProcessesUrl("/authenticate");
+
+
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.DELETE).hasAnyRole("ADMIN", "USER")
-                .requestMatchers(HttpMethod.POST).hasAnyRole("ADMIN", "USER")
-                .requestMatchers(HttpMethod.GET).permitAll()
+//                .requestMatchers(HttpMethod.DELETE).hasAnyRole("ADMIN", "USER")
+//                .requestMatchers(HttpMethod.POST).hasAnyRole("ADMIN", "USER")
+//                .requestMatchers(HttpMethod.GET).permitAll()
+                .requestMatchers(HttpMethod.POST, "/user/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()
                 .and()
+                .addFilter(authenticationFilter)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         return http.build();

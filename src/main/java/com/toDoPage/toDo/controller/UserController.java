@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
@@ -31,14 +32,10 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody User user) {
+    public ResponseEntity<UserDTO> register(@Valid @RequestBody User user) {
+        User toRegister = userService.registerUser(user);
 
-        if (userService.exists(user)) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-
-        registrationService.register(user);
-        return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.CREATED);
+        return new ResponseEntity<>(UserDTO.convertUser(toRegister), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
