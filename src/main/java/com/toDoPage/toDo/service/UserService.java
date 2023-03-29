@@ -5,11 +5,12 @@ import com.toDoPage.toDo.entities.User;
 import com.toDoPage.toDo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -18,10 +19,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    private final TaskService taskService;
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, TaskService taskService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.taskService = taskService;
     }
 
 
@@ -66,32 +70,45 @@ public class UserService {
     }
 
     @Transactional
-    public void updateTask(Long userId, Task task) {
-        User user = findUserById(userId);
-        int index = findByIndex(user, task);
-        user.getTasks().get(index);
+    public User updateTask(Long id, Task task) {
+        User user = findUserById(id);
+
+        Optional<Task> optionalTask = user.getTasks().stream()
+                .filter(t -> t.getId().equals(task.getId()))
+                .findFirst();
+
+        if (optionalTask.isPresent()) {
+            Task existingTask = optionalTask.get();
+            existingTask.setDescription(task.getDescription());
+            existingTask.setCompletionStatus(task.isCompletionStatus());
+            taskService.saveTask(existingTask);
+
+            return user;
+        } else {
+            return null;
+        }
     }
 
+    public User deleteTaskFromUser(@RequestBody Map<String, String> userIdTaskId) {
+        String userId = userIdTaskId.get("userId");
+        String taskId = userIdTaskId.get("taskId");
 
-    @Transactional
-    public List<Task> getAll(Long id) {
-        return userRepository.Tasks(id);
+        User user = findUserById(Long.valueOf(userId));
+
+        Task taskToDelete = user.getTasks().stream()
+                .filter(task -> task.getId().equals(Long.valueOf(taskId)))
+                .findFirst()
+                .orElseThrow();
+
+        taskService.deleteTask(taskToDelete.getId());
+
+        user.getTasks().remove(taskToDelete);
+
+        overwrite(user);
+
+        return user;
     }
 
-    public int findByIndex(User user, Task task) {
-//
-//        for (int i = 0; i < getAll(user).size(); i++) {
-//            if (getAll(user).get(i).equals(task)) {
-//                return i;
-//            }
-//        }
-        return -1;
-    }
-
-    public void deleteByUserIdAndTaskId(Long userId, Task task) {
-        System.out.println(userRepository.Tasks(userId));
-        userRepository.Tasks(userId).remove(task);
-    }
 
     public List<Task> getTasks(Long id) {
         return userRepository.Tasks(id);

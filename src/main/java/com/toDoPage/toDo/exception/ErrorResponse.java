@@ -1,4 +1,4 @@
-package com.toDoPage.toDo.exceptions;
+package com.toDoPage.toDo.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
