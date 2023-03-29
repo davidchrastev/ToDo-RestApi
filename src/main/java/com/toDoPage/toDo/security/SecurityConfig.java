@@ -1,8 +1,12 @@
-package com.toDoPage.toDo.security.manager;
+package com.toDoPage.toDo.security;
 
 
 import com.toDoPage.toDo.security.filter.AuthenticationFilter;
+import com.toDoPage.toDo.security.filter.ExceptionHandlerFilter;
+import com.toDoPage.toDo.security.filter.JWTAuthorizationFilter;
+import com.toDoPage.toDo.security.manager.CustomAuthenticationManager;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,28 +22,27 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @AllArgsConstructor
 public class SecurityConfig {
-    private BCryptPasswordEncoder passwordEncoder;
 
+
+    private final CustomAuthenticationManager customAuthenticationManager;
+
+    private BCryptPasswordEncoder passwordEncoder;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter();
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(customAuthenticationManager);
         authenticationFilter.setFilterProcessesUrl("/authenticate");
-
-
         http
+                .headers().frameOptions().disable() // New Line: the h2 console runs on a "frame". By default, Spring Security prevents rendering within an iframe. This line disables its prevention.
+                .and()
                 .csrf().disable()
-                .authorizeHttpRequests()
-//                .requestMatchers(HttpMethod.DELETE).hasAnyRole("ADMIN", "USER")
-//                .requestMatchers(HttpMethod.POST).hasAnyRole("ADMIN", "USER")
-//                .requestMatchers(HttpMethod.GET).permitAll()
-                .requestMatchers(HttpMethod.POST, "/user/register").permitAll()
+                .authorizeRequests()// New Line: allows us to access the h2 console without the need to authenticate. ' ** '  instead of ' * ' because multiple path levels will follow /h2.
+                .requestMatchers(HttpMethod.POST, SecurityConstants.REGISTER_PATH).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .httpBasic()
-                .and()
+                .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
                 .addFilter(authenticationFilter)
+                .addFilterAfter(new JWTAuthorizationFilter(), AuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
         return http.build();
 
     }
