@@ -38,43 +38,25 @@ public class TaskController {
     @GetMapping("/task/all/{id}")
     public ResponseEntity<UserDTO> getAllTasks(@PathVariable Long id) {
         User user = userService.findUserById(id);
-
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
         return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.OK);
     }
 
     @PostMapping("/save/task/{id}")
     public ResponseEntity<UserDTO> saveTask(@PathVariable Long id, @RequestBody Task task) {
         User user = userService.findUserById(id);
-
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-
         User userConvert = userService.saveTaskToUser(id, task);
-
-
         return new ResponseEntity<>(UserDTO.convertUser(userConvert), HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<UserDTO> updateTask(@PathVariable Long id, @RequestBody Task task) {
         User user = userService.updateTask(id, task);
-
-        if (user != null) {
-            return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.OK);
     }
 
     @DeleteMapping("/tasks/delete")
     public ResponseEntity<UserDTO> deleteTask(@RequestBody Map<String, String> loginData) {
         User user = userService.deleteTaskFromUser(loginData);
-
         return ResponseEntity.ok().body(UserDTO.convertUser(user));
     }
 
