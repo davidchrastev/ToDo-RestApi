@@ -23,29 +23,29 @@ import java.util.List;
 @ControllerAdvice
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({EntityNotFoundException.class, TaskNotFoundException.class, UserNotFoundException.class})
-    public ResponseEntity<Object> handleResourceNotFoundException(RuntimeException ex) {
-        ErrorResponse error = new ErrorResponse(Collections.singletonList(ex.getMessage()));
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<Object> handleDataAccessException(EmptyResultDataAccessException ex) {
-        ErrorResponse error = new ErrorResponse(Arrays.asList("Cannot delete non-existing resource"));
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        ErrorResponse error = new ErrorResponse(Arrays.asList("Data Integrity Violation: we cannot process your request."));
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-
-    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        List<String> errors = new ArrayList<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> errors.add(error.getDefaultMessage()));
-        return new ResponseEntity<>(new ErrorResponse(errors), HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler({EntityNotFoundException.class, TaskNotFoundException.class, UserNotFoundException.class})
+//    public ResponseEntity<Object> handleResourceNotFoundException(RuntimeException ex) {
+//        ErrorResponse error = new ErrorResponse(Collections.singletonList(ex.getMessage()));
+//        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+//    }
+//
+//    @ExceptionHandler(EmptyResultDataAccessException.class)
+//    public ResponseEntity<Object> handleDataAccessException(EmptyResultDataAccessException ex) {
+//        ErrorResponse error = new ErrorResponse(Arrays.asList("Cannot delete non-existing resource"));
+//        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+//    }
+//
+//    @ExceptionHandler(DataIntegrityViolationException.class)
+//    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+//        ErrorResponse error = new ErrorResponse(Arrays.asList("Data Integrity Violation: we cannot process your request."));
+//        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+//    }
+//
+//
+//    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+//        List<String> errors = new ArrayList<>();
+//        ex.getBindingResult().getAllErrors().forEach((error) -> errors.add(error.getDefaultMessage()));
+//        return new ResponseEntity<>(new ErrorResponse(errors), HttpStatus.BAD_REQUEST);
+//    }
 
 }
