@@ -18,7 +18,7 @@ public class AuthService {
         this.userService = userService;
     }
 
-    public User login(@RequestBody Map<String, String> loginData) {
+    public User login(Map<String, String> loginData) {
         String email = loginData.get("email");
         String password = loginData.get("password");
 
