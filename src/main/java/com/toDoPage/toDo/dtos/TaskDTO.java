@@ -1,7 +1,6 @@
 package com.toDoPage.toDo.dtos;
 
 import com.toDoPage.toDo.entities.Task;
-import com.toDoPage.toDo.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

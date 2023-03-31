@@ -1,10 +1,8 @@
 package com.toDoPage.toDo.controller;
 
-import com.toDoPage.toDo.dtos.TaskDTO;
 import com.toDoPage.toDo.dtos.UserDTO;
 import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.entities.User;
-import com.toDoPage.toDo.service.TaskService;
 import com.toDoPage.toDo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user/tasks")
@@ -27,14 +24,11 @@ public class TaskController {
 
 
     private final UserService userService;
-    private final TaskService taskService;
-
 
 
     @Autowired
-    public TaskController(UserService userService, TaskService taskService) {
+    public TaskController(UserService userService) {
         this.userService = userService;
-        this.taskService = taskService;
     }
 
     @GetMapping("/task/all/{id}")

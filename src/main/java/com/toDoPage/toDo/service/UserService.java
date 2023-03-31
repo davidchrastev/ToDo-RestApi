@@ -27,23 +27,15 @@ public class UserService {
         this.taskService = taskService;
     }
 
-
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
-
-
 
     public Optional<User> findUserById(Long id) {
         return userRepository.findById(id);
     }
 
-    @Transactional
-    public void registerUser(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
 
-    }
 
     public void overwrite(User user) {
         userRepository.save(user);
@@ -54,7 +46,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User findByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
