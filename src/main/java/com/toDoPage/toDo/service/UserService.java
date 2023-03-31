@@ -7,7 +7,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;
@@ -34,18 +33,16 @@ public class UserService {
     }
 
 
-    @Transactional
-    public User findUserById(Long id) {
-        Optional<User> optionalTask = userRepository.findById(id);
-        return optionalTask.orElse(null);
+
+    public Optional<User> findUserById(Long id) {
+        return userRepository.findById(id);
     }
 
     @Transactional
-    public User registerUser(User user) {
+    public void registerUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
 
-        return user;
     }
 
     public void overwrite(User user) {
@@ -63,50 +60,62 @@ public class UserService {
 
     @Transactional
     public User saveTaskToUser(Long userId, Task task) {
-        User user = findUserById(userId);
+        Optional<User> optionalUser = findUserById(userId);
+
+        User user = optionalUser.orElseThrow(() -> new RuntimeException("User not found"));
         user.getTasks().add(task);
         task.setUser(user);
+
         return user;
     }
 
     @Transactional
     public User updateTask(Long id, Task task) {
-        User user = findUserById(id);
+        Optional<User> userOptional = findUserById(id);
 
-        Optional<Task> optionalTask = user.getTasks().stream()
-                .filter(t -> t.getId().equals(task.getId()))
-                .findFirst();
+        return userOptional.map(u -> {
+            Optional<Task> optionalTask = u.getTasks().stream()
+                    .filter(t -> t.getId().equals(task.getId()))
+                    .findFirst();
 
-        if (optionalTask.isPresent()) {
-            Task existingTask = optionalTask.get();
-            existingTask.setDescription(task.getDescription());
-            existingTask.setCompletionStatus(task.isCompletionStatus());
-            taskService.saveTask(existingTask);
-
-            return user;
-        } else {
-            return null;
-        }
+            if (optionalTask.isPresent()) {
+                Task existingTask = optionalTask.get();
+                existingTask.setDescription(task.getDescription());
+                existingTask.setCompletionStatus(task.isCompletionStatus());
+                taskService.saveTask(existingTask);
+            }
+            return u;
+        }).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public User deleteTaskFromUser(@RequestBody Map<String, String> userIdTaskId) {
-        String userId = userIdTaskId.get("userId");
-        String taskId = userIdTaskId.get("taskId");
+    @Transactional
+    public User deleteTaskFromUser(Map<String, String> userIdTaskId) {
+        String userIdString = userIdTaskId.get("userId");
+        String taskIdString = userIdTaskId.get("taskId");
 
-        User user = findUserById(Long.valueOf(userId));
+        long userId = convertToLong(userIdString, "Invalid user ID: " + userIdString);
+        long taskId = convertToLong(taskIdString, "Invalid task ID: " + taskIdString);
 
-        Task taskToDelete = user.getTasks().stream()
-                .filter(task -> task.getId().equals(Long.valueOf(taskId)))
-                .findFirst()
-                .orElseThrow();
+        User user = findUserById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        taskService.deleteTask(taskToDelete.getId());
+        List<Task> tasks = user.getTasks();
 
-        user.getTasks().remove(taskToDelete);
+        boolean taskRemoved = tasks.removeIf(task -> task.getId() == taskId);
+        if (!taskRemoved) {
+            throw new RuntimeException("Task not found");
+        }
 
         overwrite(user);
 
         return user;
+    }
+    private long convertToLong(String string, String errorMessage) {
+        try {
+            return Long.parseLong(string);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException(errorMessage);
+        }
     }
 
 
