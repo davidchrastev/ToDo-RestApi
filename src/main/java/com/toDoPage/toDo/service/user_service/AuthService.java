@@ -25,11 +25,7 @@ public class AuthService {
 
         Optional<User> user = userService.findByEmail(email);
 
-        if (user.isPresent()) {
-            if (BCrypt.checkpw(password, user.get().getPassword())) {
-                return user;
-            }
-        }
+        user.ifPresent(value -> BCrypt.checkpw(password, value.getPassword()));
 
         return user;
     }
