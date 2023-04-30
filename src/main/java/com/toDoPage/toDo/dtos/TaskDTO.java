@@ -16,7 +16,6 @@ public class TaskDTO {
 
     private boolean completionStatus;
 
-
     public static TaskDTO convertTask(Task task) {
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.description = task.getDescription();

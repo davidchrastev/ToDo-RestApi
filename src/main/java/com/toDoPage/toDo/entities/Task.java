@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class Task {
     @Id
     @Column(name = "id")
@@ -28,4 +27,7 @@ public class Task {
     private User user;
 
 
+    public Task () {
+
+    }
 }

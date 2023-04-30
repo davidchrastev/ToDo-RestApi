@@ -40,7 +40,7 @@ public class TaskController {
         this.addTask = addTask;
     }
 
-    @GetMapping("/task/all/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getAllTasks(@PathVariable Long id) {
         Optional<User> user = userService.findUserById(id);
         if (user.isPresent()) {
@@ -49,19 +49,19 @@ public class TaskController {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
     }
 
-    @PostMapping("/save/task/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<UserDTO> saveTask(@PathVariable Long id, @RequestBody Task task) {
         User userConvert = addTask.saveTaskToUser(id, task);
         return new ResponseEntity<>(UserDTO.convertUser(userConvert), HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateTask(@PathVariable Long id, @RequestBody Task task) {
         User user = updateTask.updateTask(id, task);
         return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.OK);
     }
 
-    @DeleteMapping("/tasks/delete")
+    @DeleteMapping()
     public ResponseEntity<UserDTO> deleteTask(@RequestBody Map<String, String> loginData) {
         User user = deleteTask.deleteTaskFromUser(loginData);
         return ResponseEntity.ok().body(UserDTO.convertUser(user));

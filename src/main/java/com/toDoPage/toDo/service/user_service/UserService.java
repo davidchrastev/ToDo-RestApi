@@ -1,15 +1,10 @@
 package com.toDoPage.toDo.service.user_service;
 
-import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.entities.User;
 import com.toDoPage.toDo.repository.UserRepository;
-import com.toDoPage.toDo.service.task_service.TaskService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -30,7 +25,6 @@ public class UserService {
     }
     public void overwrite(User user) {
         userRepository.save(user);
-
     }
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
