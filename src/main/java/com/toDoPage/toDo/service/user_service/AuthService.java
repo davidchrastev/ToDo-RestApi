@@ -1,12 +1,13 @@
-package com.toDoPage.toDo.service;
+package com.toDoPage.toDo.service.user_service;
 
 import com.toDoPage.toDo.entities.User;
+import com.toDoPage.toDo.service.user_service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -18,19 +19,14 @@ public class AuthService {
         this.userService = userService;
     }
 
-    public User login(@RequestBody Map<String, String> loginData) {
+    public Optional<User> login(Map<String, String> loginData) {
         String email = loginData.get("email");
         String password = loginData.get("password");
 
-        User user = userService.findByEmail(email);
+        Optional<User> user = userService.findByEmail(email);
 
-        if (user == null) {
-            return null;
-        }
+        user.ifPresent(value -> BCrypt.checkpw(password, value.getPassword()));
 
-        if (!BCrypt.checkpw(password, user.getPassword())) {
-            return null;
-        }
         return user;
     }
 }

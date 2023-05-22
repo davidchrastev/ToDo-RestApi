@@ -2,7 +2,6 @@ package com.toDoPage.toDo.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;

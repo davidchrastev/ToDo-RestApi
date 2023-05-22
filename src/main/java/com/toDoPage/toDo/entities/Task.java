@@ -32,4 +32,7 @@ public class Task {
     private User user;
 
 
+    public Task () {
+
+    }
 }

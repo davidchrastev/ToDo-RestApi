@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class UserDTO {
 
+    private Long id;
     private String firstName;
 
     private String lastName;
@@ -27,6 +28,7 @@ public class UserDTO {
     public static UserDTO convertUser(User user) {
         UserDTO userDTO = new UserDTO();
 
+        userDTO.id = user.getId();
         userDTO.firstName = user.getFirstName();
         userDTO.lastName = user.getLastName();
         userDTO.email = user.getEmail();
