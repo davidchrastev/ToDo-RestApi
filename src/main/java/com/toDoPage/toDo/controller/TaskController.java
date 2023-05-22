@@ -14,11 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tasks")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TaskController {
 
 
@@ -38,7 +38,7 @@ public class TaskController {
         this.updateTaskService = updateTaskService;
     }
 
-    @GetMapping("/task/all/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getAllTasks(@PathVariable Long id) {
         User user = userService.findUserById(id);
 
@@ -49,7 +49,7 @@ public class TaskController {
         return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.OK);
     }
 
-    @PostMapping("/save/task/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<UserDTO> saveTask(@PathVariable Long id, @RequestBody Task task) {
         User user = userService.findUserById(id);
 
@@ -62,7 +62,7 @@ public class TaskController {
         return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateTask(@PathVariable Long id, @RequestBody Task task) {
         User user = updateTaskService.updateTask(id, task);
 
@@ -73,7 +73,7 @@ public class TaskController {
         }
     }
 
-    @DeleteMapping("/tasks/delete")
+    @DeleteMapping("/")
     public ResponseEntity<UserDTO> deleteTask(@RequestBody Map<String, String> loginData) {
         User user = deleteTaskService.delete(loginData);
 
