@@ -1,4 +1,4 @@
-package com.toDoPage.toDo.service.user_service;
+package com.toDoPage.toDo.service;
 
 
 import com.toDoPage.toDo.entities.User;

@@ -2,9 +2,9 @@ package com.toDoPage.toDo.controller;
 
 import com.toDoPage.toDo.dtos.UserDTO;
 import com.toDoPage.toDo.entities.User;
-import com.toDoPage.toDo.service.user_service.AuthService;
-import com.toDoPage.toDo.service.user_service.RegisterService;
-import com.toDoPage.toDo.service.user_service.UserService;
+import com.toDoPage.toDo.service.AuthService;
+import com.toDoPage.toDo.service.RegisterService;
+import com.toDoPage.toDo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
