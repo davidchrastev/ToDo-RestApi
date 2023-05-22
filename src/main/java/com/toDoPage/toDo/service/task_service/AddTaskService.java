@@ -2,6 +2,7 @@ package com.toDoPage.toDo.service.task_service;
 
 import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.entities.User;
+import com.toDoPage.toDo.service.user_service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

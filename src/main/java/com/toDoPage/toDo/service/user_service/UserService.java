@@ -3,7 +3,7 @@ package com.toDoPage.toDo.service.user_service;
 import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.entities.User;
 import com.toDoPage.toDo.repository.UserRepository;
-import com.toDoPage.toDo.service.TaskService;
+import com.toDoPage.toDo.service.task_service.TaskService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +19,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
     private final TaskService taskService;
     @Autowired
     public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, TaskService taskService) {
@@ -66,6 +65,10 @@ public class UserService {
     public User updateTask(Long id, Task task) {
         Optional<User> userOptional = findUserById(id);
 
+        return getUser(task, userOptional, taskService);
+    }
+
+    public static User getUser(Task task, Optional<User> userOptional, TaskService taskService) {
         return userOptional.map(u -> {
             Optional<Task> optionalTask = u.getTasks().stream()
                     .filter(t -> t.getId().equals(task.getId()))

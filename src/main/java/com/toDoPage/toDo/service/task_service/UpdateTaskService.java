@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.toDoPage.toDo.service.user_service.UserService.getUser;
+
 @Service
 public class UpdateTaskService {
 
@@ -27,19 +29,7 @@ public class UpdateTaskService {
     public User updateTask(Long id, Task task) {
         Optional<User> userOptional = userService.findUserById(id);
 
-        return userOptional.map(u -> {
-            Optional<Task> optionalTask = u.getTasks().stream()
-                    .filter(t -> t.getId().equals(task.getId()))
-                    .findFirst();
-
-            if (optionalTask.isPresent()) {
-                Task existingTask = optionalTask.get();
-                existingTask.setDescription(task.getDescription());
-                existingTask.setCompletionStatus(task.isCompletionStatus());
-                taskService.saveTask(existingTask);
-            }
-            return u;
-        }).orElseThrow(() -> new RuntimeException("User not found"));
+        return getUser(task, userOptional, taskService);
     }
 
 }
