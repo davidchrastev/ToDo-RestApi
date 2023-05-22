@@ -1,7 +1,7 @@
 package com.toDoPage.toDo.security.manager;
 
 import com.toDoPage.toDo.entities.User;
-import com.toDoPage.toDo.service.UserService;
+import com.toDoPage.toDo.service.user_service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
