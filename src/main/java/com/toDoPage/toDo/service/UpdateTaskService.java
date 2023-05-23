@@ -25,13 +25,10 @@ public class UpdateTaskService {
         this.userService = userService;
         this.taskService = taskService;
     }
-
-
-
     public User updateTask(Long id, Task task) {
-        User user = userService.findUserById(id);
+        Optional<User> user = userService.findUserById(id);
 
-        Optional<Task> optionalTask = user.getTasks().stream()
+        Optional<Task> optionalTask = user.get().getTasks().stream()
                 .filter(t -> t.getId().equals(task.getId()))
                 .findFirst();
 
@@ -41,9 +38,9 @@ public class UpdateTaskService {
             existingTask.setCompletionStatus(task.isCompletionStatus());
             taskService.saveTask(existingTask);
 
-            return user;
-        } else {
-            return null;
+            return user.get();
         }
+        return null;
     }
+
 }

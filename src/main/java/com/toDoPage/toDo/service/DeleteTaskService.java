@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class DeleteTaskService {
@@ -23,19 +24,19 @@ public class DeleteTaskService {
         String userId = userIdTaskId.get("userId");
         String taskId = userIdTaskId.get("taskId");
 
-        User user = userService.findUserById(Long.valueOf(userId));
+        Optional<User> user = userService.findUserById(Long.valueOf(userId));
 
-        Task taskToDelete = user.getTasks().stream()
+        Task taskToDelete = user.get().getTasks().stream()
                 .filter(task -> task.getId().equals(Long.valueOf(taskId)))
                 .findFirst()
                 .orElseThrow();
 
         taskService.deleteTask(taskToDelete.getId());
 
-        user.getTasks().remove(taskToDelete);
+        user.get().getTasks().remove(taskToDelete);
 
-        userService.overwrite(user);
+        userService.overwrite(user.get());
 
-        return user;
+        return user.get();
     }
 }

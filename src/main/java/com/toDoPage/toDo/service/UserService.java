@@ -14,19 +14,20 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
-
     @Transactional
-    public User findUserById(Long id) {
-        Optional<User> optionalTask = userRepository.findById(id);
-        return optionalTask.orElse(null);
+    public Optional<User> findUserById(Long id) {
+        return userRepository.findById(id);
     }
 
     @Transactional
@@ -36,9 +37,9 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void overwrite(User user) {
         userRepository.save(user);
-
     }
 
     public void deleteUser(Long id) {
@@ -51,46 +52,40 @@ public class UserService {
 
     @Transactional
     public User saveTaskToUser(Long userId, Task task) {
-        User user = findUserById(userId);
-        user.getTasks().add(task);
-        task.setUser(user);
-        return user;
+        Optional<User> user = findUserById(userId);
+        user.ifPresent(u -> {
+            u.getTasks().add(task);
+            task.setUser(u);
+        });
+        return user.orElse(null);
     }
 
     @Transactional
     public void updateTask(Long userId, Task task) {
-        User user = findUserById(userId);
-        int index = findByIndex(user, task);
-        user.getTasks().get(index);
+        Optional<User> user = findUserById(userId);
+        user.ifPresent(u -> {
+            int index = u.getTasks().indexOf(task);
+            if (index != -1) {
+                u.getTasks().set(index, task);
+            }
+        });
     }
-
 
     @Transactional
-    public List<Task> getAll(Long id) {
-        return userRepository.Tasks(id);
+    public List<Task> getAllTasksByUserId(Long userId) {
+        return userRepository. findTasksById(userId);
     }
 
-    public int findByIndex(User user, Task task) {
-//
-//        for (int i = 0; i < getAll(user).size(); i++) {
-//            if (getAll(user).get(i).equals(task)) {
-//                return i;
-//            }
-//        }
-        return -1;
+    public void deleteTaskByUserIdAndTaskId(Long userId, Task task) {
+        List<Task> userTasks = userRepository. findTasksById(userId);
+        userTasks.remove(task);
     }
 
-    public void deleteByUserIdAndTaskId(Long userId, Task task) {
-        System.out.println(userRepository.Tasks(userId));
-        userRepository.Tasks(userId).remove(task);
-    }
-
-    public List<Task> getTasks(Long id) {
-        return userRepository.Tasks(id);
+    public List<Task> getTasks(Long userId) {
+        return userRepository. findTasksById(userId);
     }
 
     public boolean exists(User user) {
         return findByEmail(user.getEmail()) != null;
     }
-
 }

@@ -17,22 +17,19 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
-
-    //postman http://localhost:8080/user
-
     private final UserService userService;
     private final AuthService authService;
     private final RegistrationService registrationService;
+
     @Autowired
-    public UserController(UserService userService, RegistrationService registrationService, AuthService loginService) {
+    public UserController(UserService userService, RegistrationService registrationService, AuthService authService) {
         this.userService = userService;
         this.registrationService = registrationService;
-        this.authService = loginService;
+        this.authService = authService;
     }
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody User user) {
-
         if (userService.exists(user)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -43,18 +40,16 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(@RequestBody Map<String, String> loginData) {
-        if (authService.login(loginData) == null) {
+        User user = authService.login(loginData);
+        if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        return new ResponseEntity<>(UserDTO.convertUser(authService.login(loginData)), HttpStatus.OK);
+        return new ResponseEntity<>(UserDTO.convertUser(user), HttpStatus.OK);
     }
 
     @GetMapping("/logout")
     public ResponseEntity<String> logout() {
         return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
     }
-
-
-
 }

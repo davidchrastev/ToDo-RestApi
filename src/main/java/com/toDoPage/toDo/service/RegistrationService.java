@@ -16,10 +16,10 @@ public class RegistrationService {
 
     public boolean register(User user) {
         if (userService.exists(user)) {
-            return true;
+            return true; // User already exists
         } else {
             userService.registerUser(user);
-            return false;
+            return false; // User registration successful
         }
     }
 }
