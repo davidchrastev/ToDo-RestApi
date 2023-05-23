@@ -9,13 +9,9 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "task")
 @Getter
 @Setter
+@NoArgsConstructor(force = true)
 @AllArgsConstructor
 public class Task {
-
-    public Task() {
-
-    }
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,5 +26,6 @@ public class Task {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
+
 
 }

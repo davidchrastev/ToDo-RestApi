@@ -1,4 +1,4 @@
-package com.toDoPage.toDo.service.task_service;
+package com.toDoPage.toDo.service;
 
 import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.repository.TaskRepository;
@@ -12,24 +12,20 @@ import java.util.Optional;
 
 @Service
 public class TaskService {
-
-    private final TaskRepository taskRepository;
-
     @Autowired
-    public TaskService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
+    private TaskRepository taskRepository;
 
     public List<Task> findAllTasks() {
         return taskRepository.findAll();
     }
 
-    public Optional<Task> findTaskById(Long id) {
-        return taskRepository.findById(id);
+    public Task findTaskById(Long id) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+        return optionalTask.orElse(null);
     }
 
-    public void saveTask(Task task) {
-        taskRepository.save(task);
+    public Task saveTask(Task task) {
+        return taskRepository.save(task);
     }
 
     public void deleteTask(Long id) {

@@ -2,6 +2,7 @@ package com.toDoPage.toDo.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -12,11 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor(force = true)
 public class User {
-
-    public User() {
-
-    }
 
     @Id
     @Column(name = "id")
