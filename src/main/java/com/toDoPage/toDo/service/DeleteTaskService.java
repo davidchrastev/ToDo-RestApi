@@ -24,7 +24,7 @@ public class DeleteTaskService {
         String userId = userIdTaskId.get("userId");
         String taskId = userIdTaskId.get("taskId");
 
-        Optional<User> user = userService.findUserById(Long.valueOf(userId));
+//        Optional<User> user = userService.getTasks(Long.valueOf(userId));
 
         Task taskToDelete = user.get().getTasks().stream()
                 .filter(task -> task.getId().equals(Long.valueOf(taskId)))

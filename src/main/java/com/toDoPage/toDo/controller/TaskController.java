@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,27 +34,15 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getAllTasks(@PathVariable Long id) {
-        Optional<User> user = userService.findUserById(id);
-
-        if (user.isPresent()) {
-            return new ResponseEntity<>(UserDTO.convertUser(user.get()), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<List<Task>> getAllTasks(@PathVariable Long id) {
+        return ResponseEntity.of(Optional.ofNullable(userService.getTasks(id)));
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<UserDTO> saveTask(@PathVariable Long id, @RequestBody Task task) {
-        Optional<User> user = userService.findUserById(id);
+    public ResponseEntity<Void> saveTask(@PathVariable Long id, @RequestBody Task task) {
+        userService.addTask(id, task);
 
-        if (user.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-
-        User userConvert = userService.saveTaskToUser(id, task);
-
-        return new ResponseEntity<>(UserDTO.convertUser(userConvert), HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -76,7 +65,7 @@ public class TaskController {
 
     @GetMapping("/sortedByNotCompletedCompilation/all/{id}")
     public ResponseEntity<UserDTO> getTasksThatAreNotCompleted(@PathVariable Long id) {
-        Optional<User> user = userService.findUserById(id);
+        Optional<User> user = userService.getTasks(id);
 
         if (user.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -88,17 +77,17 @@ public class TaskController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/sortedByCompletedCompilation/all/{id}")
-    public ResponseEntity<UserDTO> getTasksThatAreCompleted(@PathVariable Long id) {
-        Optional<User> user = userService.findUserById(id);
-
-        if (user.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        UserDTO userDTO = UserDTO.convertUser(user.get());
-        userDTO.setTasks(userDTO.getTasks().stream().filter(TaskDTO::isCompletionStatus).collect(Collectors.toList()));
-
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
-    }
+//    @GetMapping("/sortedByCompletedCompilation/all/{id}")
+//    public ResponseEntity<UserDTO> getTasksThatAreCompleted(@PathVariable Long id) {
+//        Optional<User> user = userService.getTasks(id);
+//
+//        if (user.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//
+//        UserDTO userDTO = UserDTO.convertUser(user.get());
+//        userDTO.setTasks(userDTO.getTasks().stream().filter(TaskDTO::isCompletionStatus).collect(Collectors.toList()));
+//
+//        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+//    }
 }

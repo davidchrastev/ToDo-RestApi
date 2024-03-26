@@ -22,7 +22,7 @@ public class UpdateTaskService {
 
 
     public User updateTask(Long id, Task task) {
-        Optional<User> user = userService.findUserById(id);
+
         Optional<Task> optionalTask = user.get().getTasks().stream()
                 .filter(t -> t.getId().equals(task.getId()))
                 .findFirst();
