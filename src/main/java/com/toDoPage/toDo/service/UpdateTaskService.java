@@ -1,15 +1,9 @@
 package com.toDoPage.toDo.service;
 
-import com.toDoPage.toDo.dtos.UserDTO;
 import com.toDoPage.toDo.entities.Task;
 import com.toDoPage.toDo.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
@@ -25,9 +19,10 @@ public class UpdateTaskService {
         this.userService = userService;
         this.taskService = taskService;
     }
+
+
     public User updateTask(Long id, Task task) {
         Optional<User> user = userService.findUserById(id);
-
         Optional<Task> optionalTask = user.get().getTasks().stream()
                 .filter(t -> t.getId().equals(task.getId()))
                 .findFirst();

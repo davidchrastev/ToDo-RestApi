@@ -7,8 +7,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class ToDoApplication  {
-
-
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -17,5 +15,4 @@ public class ToDoApplication  {
 	public static void main(String[] args) {
 		SpringApplication.run(ToDoApplication.class, args);
 	}
-
 }
